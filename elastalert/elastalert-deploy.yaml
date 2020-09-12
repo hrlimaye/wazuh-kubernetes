@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: elastalert
-  namespace: poc
+  namespace: wazuh
   labels:
     app: elastalert
 spec:
@@ -15,7 +15,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata: 
   name: elastalert-deployment
-  namespace: poc
+  namespace: wazuh
 spec: 
   replicas: 1
   selector: 
