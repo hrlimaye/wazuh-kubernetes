@@ -1,0 +1,70 @@
+#######################################################################
+# Kubernetes StatefulSet for the Wazuh manager master node
+#
+# We deploy only one replica here because Wazuh is not yet supporting
+# a multi-master setup
+#######################################################################
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: wazuh-manager-master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wazuh-manager
+      node-type: master
+  serviceName: wazuh-cluster
+  podManagementPolicy: Parallel
+  template:
+    metadata:
+      labels:
+        app: wazuh-manager
+        node-type: master
+      name: wazuh-manager-master
+    spec:
+      volumes:
+        - name: config
+          configMap:
+            name: wazuh-manager-master-conf
+      containers:
+        - name: wazuh-manager
+          image: 'wazuh/wazuh:3.13.1_7.8.0'
+          lifecycle:
+           postStart:
+            exec:
+             command: ["/bin/sh", "-c", "echo India@123 > /var/ossec/etc/authd.pass"]
+          resources:
+            requests:
+              cpu: 500m
+              memory: 256Mi
+            limits:
+              cpu: 1
+              memory: 512Mi
+          volumeMounts:
+            - name: config
+              mountPath: /wazuh-config-mount/etc/ossec.conf
+              subPath: ossec.conf
+              readOnly: true
+            - name: wazuh-manager-master
+              mountPath: /var/ossec/data
+            - name: wazuh-manager-master
+              mountPath: /etc/postfix
+          ports:
+            - containerPort: 1515
+              name: ossec-authd
+            - containerPort: 1516
+              name: wazuh-clusterd
+            - containerPort: 55000
+              name: wazuh-api
+  volumeClaimTemplates:
+    - metadata:
+        name: wazuh-manager-master
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: gp2-encrypted-retained
+        resources:
+          requests:
+            storage: 10Gi

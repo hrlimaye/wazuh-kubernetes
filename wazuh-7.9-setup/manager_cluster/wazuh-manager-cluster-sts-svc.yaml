@@ -1,0 +1,18 @@
+#######################################################################
+# Headless service for the wazuh-manager-master StatefulSet
+#######################################################################
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wazuh-cluster
+  labels:
+    app: wazuh-manager
+spec:
+  selector:
+    app: wazuh-manager
+  ports:
+    - name: wazuh-clusterd
+      port: 1516
+      targetPort: 1516
+  clusterIP: None

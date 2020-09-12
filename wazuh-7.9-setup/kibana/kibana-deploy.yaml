@@ -1,0 +1,38 @@
+#######################################################################
+# Kubernetes Deployment for Wazuh Kibana container
+#######################################################################
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wazuh-kibana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wazuh-kibana
+  template:
+    metadata:
+      labels:
+        app: wazuh-kibana
+      name: wazuh-kibana
+    spec:
+      containers:
+        - name: wazuh-kibana
+          image: 'wazuh/wazuh-kibana:3.13.1_7.8.0'
+          #imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: 400m
+              memory: 1024Mi
+          ports:
+            - containerPort: 5601
+              name: kibana
+          env:
+            - name: ELASTICSEARCH_URL
+              value: 'http://elasticsearch:9200'
+            - name: NODE_OPTIONS
+              value: '--max-old-space-size=4096'
