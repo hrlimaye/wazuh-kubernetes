@@ -1,0 +1,18 @@
+#######################################################################
+# Service to expose Wazuh Kibana container inside the Kubernetes
+# cluster
+#######################################################################
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  labels:
+    app: wazuh-kibana
+spec:
+  selector:
+    app: wazuh-kibana
+  ports:
+    - name: kibana
+      port: 5601
+      targetPort: 5601

@@ -1,0 +1,35 @@
+#######################################################################
+# Kubernetes Deployment for the Wazuh Logstash container
+#######################################################################
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wazuh-logstash
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wazuh-logstash
+  template:
+    metadata:
+      labels:
+        app: wazuh-logstash
+      name: wazuh-logstash
+    spec:
+      containers:
+        - name: wazuh-logstash
+          #image: 'wazuh/wazuh-logstash:3.6.1_6.4.0'
+          image: 'wazuh/wazuh-logstash:latest'
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: 1
+              memory: 1.5Gi
+          env:
+            - name: LS_JAVA_OPTS
+              value: '-Xmx1g -Xms512m'
+          ports:
+            - containerPort: 5000
