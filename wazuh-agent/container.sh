@@ -1,0 +1,1 @@
+docker container run --detach --name wazuh-agent --privileged -v /var/log/secure:/var/log/secure -v /var/log/messages:/var/log/messages -e JOIN_MANAGER=wazuh -e JOIN_WORKER=wazuh-workers -e JOIN_PASSWORD=India@123 -e JOIN_GROUPS=defaults -e HOSTNAME=${HOSTNAME}
