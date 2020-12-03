@@ -28,7 +28,7 @@ spec:
           value: India@123
         - name: JOIN_GROUPS
           value: default
-        image: hrlimaye/wazuh-agent:2.0
+        image: hrlimaye/wazuh-agent:centos-1.1
         name: agent
         resources:
           limits:
@@ -38,18 +38,18 @@ spec:
             cpu: 10m
             memory: 50Mi
         volumeMounts:
-        - mountPath: /var/log/messages
-          name: messages
-        - mountPath: /var/log/secure
-          name: secure
+        - mountPath: /var/log
+          name: log
+        - mountPath: /etc/os-release 
+          name: osrelease
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       volumes:
       - hostPath:
-          path: /var/log/messages
+          path: /var/log
           type: ""
-        name: messages
+        name: log
       - hostPath:
-          path: /var/log/secure
+          path: /etc/os-release
           type: ""
-        name: secure
+        name: osrelease

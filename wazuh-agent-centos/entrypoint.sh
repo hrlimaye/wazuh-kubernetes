@@ -10,7 +10,7 @@ if [ ! -s /var/ossec/etc/client.keys ]; then
   manager="${JOIN_MANAGER}"
   worker="${JOIN_WORKER}"
   name="${HOSTNAME}"
-  /var/ossec/bin/agent-auth -A $name -m $manager $password
+  /var/ossec/bin/agent-auth -A $name -m $manager -G $groups $password
 fi
 # password="-P ${JOIN_PASSWORD}"
 # manager="${JOIN_MANAGER}"
@@ -37,7 +37,7 @@ do
   status=$?
   if [ $status -ne 0 ]; then
     echo "looks like the agent died...Exiting the container."
-    #exit 1
+    exit 1
   fi
   sleep 120
 done

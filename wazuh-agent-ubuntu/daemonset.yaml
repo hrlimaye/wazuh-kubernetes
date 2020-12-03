@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: wazuh-agent
+  namespace: logging
+spec:
+  selector:
+    matchLabels:
+      app: wazuh-agent
+  template:
+    metadata:
+      labels:
+        app: wazuh-agent
+    spec:
+      imagePullSecrets:
+      - name: docker-secret
+      containers:
+      - env:
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: JOIN_MANAGER
+          value: "wazuh"
+        - name: JOIN_WORKER
+          value: "wazuh-workers"
+        - name: JOIN_PASSWORD
+          value: India@123
+        - name: JOIN_GROUPS
+          value: default
+        image: hrlimaye/wazuh-agent:2.1
+        name: agent
+        resources:
+          limits:
+            cpu: 50m
+            memory: 200Mi
+          requests:
+            cpu: 10m
+            memory: 50Mi
+        volumeMounts:
+        - mountPath: /var/log
+          name: log
+        - mountPath: /etc/os-release 
+          name: osrelease
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      volumes:
+      - hostPath:
+          path: /var/log
+          type: ""
+        name: log
+      - hostPath:
+          path: /etc/os-release
+          type: ""
+        name: osrelease
