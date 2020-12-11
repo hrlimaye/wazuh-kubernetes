@@ -26,12 +26,17 @@ spec:
       labels: 
         app: elastalert
     spec: 
+      volumes:
+      - name: rules
+        configMap:
+          name: elastalert-rules
       containers: 
-        - 
-          image: harshalk91/elastalert:0.2.2
+        - image: harshalk91/elastalert:0.2.2
           imagePullPolicy: Always
           name: elastalert
           ports: 
-            - 
-              containerPort: 3030
-              name: mainport
+          - containerPort: 3030
+            name: mainport
+          volumeMounts:
+          - name: rules
+            mountPath: /opt/elastalert/rules
