@@ -1,0 +1,74 @@
+#elastic config this overridden from global config 
+es_host: elasticsearch
+es_port: 9200
+
+#name of rule 
+name: Too many ssh authentication failures
+
+#rule type <- frequency
+type: frequency
+
+# Alert when this many documents matching the query occur within a timeframe
+num_events: 2
+
+# num_events must occur within this amount of time to trigger an alert
+timeframe:
+  weeks: 1
+
+index: wazuh-alerts-3.x-*
+
+query_key:
+  - match_body.source.ip
+
+#default is_enabled will true to load all rules, but i have #specified this rule to enable
+is_enabled: true
+
+buffer_time:
+  minutes: 5
+run_every:
+  minutes: 1
+
+
+timeframe:
+  minutes: 1
+
+include:
+  - agent.name
+  - agent.ip
+  - full_log
+  - "@src_ip"
+
+
+alert_subject: "Too many authentication failures on {} : {} from source IP {}"
+alert_subject_args:
+  - agent.name
+  - agent.ip
+  - "@src_ip"
+
+alert_text: |-
+  Description: {}
+alert_text_args:
+  - full_log
+
+alert_text_type: alert_text_only
+
+filter:
+- query:
+    query_string:
+      query: "Too many authentication failures"
+
+
+alert:
+   - slack
+slack_webhook_url: "https://hooks.slack.com/services/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"
+slack_channel_override: "#security-events"
+slack_username_override: "@too_many_ssh_auth_failure"
+
+#subject to email
+#alert:
+#- "email"
+
+#email:
+#- "hrishikesh@jombay.com"
+#smtp_host: postfix.postfix.svc
+#smtp_port: 25

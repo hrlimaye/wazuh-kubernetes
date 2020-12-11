@@ -21,9 +21,9 @@ spec:
             fieldRef:
               fieldPath: spec.nodeName
         - name: JOIN_MANAGER
-          value: "wazuh"
+          value: "wazuh.logging.svc.cluster.local"
         - name: JOIN_WORKER
-          value: "wazuh-workers"
+          value: "wazuh-workers.logging.svc.cluster.local"
         - name: JOIN_PASSWORD
           value: India@123
         - name: JOIN_GROUPS
@@ -40,8 +40,6 @@ spec:
         volumeMounts:
         - mountPath: /var/log
           name: log
-        - mountPath: /etc/os-release 
-          name: osrelease
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       volumes:
@@ -49,7 +47,3 @@ spec:
           path: /var/log
           type: ""
         name: log
-      - hostPath:
-          path: /etc/os-release
-          type: ""
-        name: osrelease

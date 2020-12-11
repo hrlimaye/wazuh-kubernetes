@@ -1,0 +1,74 @@
+#elastic config this overridden from global config 
+es_host: elasticsearch
+es_port: 9200
+
+#name of rule 
+name: Invalid User SSH Attempt
+
+#rule type <- frequency
+type: frequency
+
+# Alert when this many documents matching the query occur within a timeframe
+num_events: 5
+
+# num_events must occur within this amount of time to trigger an alert
+timeframe:
+  weeks: 1
+
+index: wazuh-alerts-3.x-*
+
+query_key:
+  - match_body.source.ip
+
+#default is_enabled will true to load all rules, but i have #specified this rule to enable
+is_enabled: true
+
+buffer_time:
+  minutes: 5
+run_every:
+  minutes: 1
+
+
+timeframe:
+  minutes: 1
+
+include:
+  - agent.name
+  - agent.ip
+  - full_log
+  - "@src_ip"
+
+
+alert_subject: "Invalid User SSH Attempt on {} : {} from source IP {}"
+alert_subject_args:
+  - agent.name
+  - agent.ip
+  - "@src_ip"
+
+alert_text: |-
+  Description: {}
+alert_text_args:
+  - full_log
+
+alert_text_type: alert_text_only
+
+filter:
+- query:
+    query_string:
+      query: "invalid user"
+
+
+alert:
+   - slack
+slack_webhook_url: "https://hooks.slack.com/services/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"
+slack_channel_override: "#alerts"
+slack_username_override: "@ssh_invalid_user_attempt"
+
+#subject to email
+#alert:
+#- "email"
+
+#email:
+#- "hrishikesh@jombay.com"
+#smtp_host: postfix.postfix.svc
+#smtp_port: 25
